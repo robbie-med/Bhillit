@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#1f2724">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="E/M Coder">
+<meta name="description" content="Offline 2026 E/M visit level coder based on Medical Decision Making (MDM).">
+<title>E/M Coder</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="title">E/M Coder <span class="sub">MDM &middot; 2026</span></div>
+  <div class="controls">
+    <button id="ptType">Established</button>
+    <button id="reset">Reset</button>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="sec-head">
+      <h2>Problems addressed</h2>
+      <span class="sec-lvl" id="probLvl">&mdash;</span>
+    </div>
+    <div class="chips" id="probChips"></div>
+    <div class="hint">Tap stable chronic / minor more than once if more than one. Document each in your A/P.</div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Data reviewed / ordered</h2>
+      <span class="sec-lvl" id="dataLvl">&mdash;</span>
+    </div>
+    <div class="chips" id="dataChips"></div>
+    <div class="hint">Each unique source / test counts once. Tap to increment.</div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Risk of management</h2>
+      <span class="sec-lvl" id="riskLvl">&mdash;</span>
+    </div>
+    <div class="chips" id="riskChips"></div>
+    <div class="hint">Highest applicable wins. Rx for an OTC product still = Rx mgmt.</div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Same-day extras</h2>
+    </div>
+    <div class="chips" id="extrasChips"></div>
+    <div class="hint">Auto-adds modifier -25 when a preventive or counseling code is paired with the E/M.</div>
+  </section>
+</main>
+
+<div class="result" id="result">
+  <div class="result-row">
+    <div class="code empty" id="codeOut">&mdash;</div>
+    <div class="driver" id="driverOut">Tap above to start.</div>
+    <div class="expand-icon">&#9662;</div>
+  </div>
+  <div class="details" id="details">
+    <div class="breakdown">
+      <div class="bd-row" id="bdProb"><span class="k">Problems</span><span class="v">&mdash;</span></div>
+      <div class="bd-row" id="bdData"><span class="k">Data</span><span class="v">&mdash;</span></div>
+      <div class="bd-row" id="bdRisk"><span class="k">Risk</span><span class="v">&mdash;</span></div>
+    </div>
+    <div class="addons-list" id="addonsOut"></div>
+  </div>
+</div>
+
+<p class="disclaimer">
+  Educational reference only. Verify against current CPT&reg;/CMS guidance and your
+  organization&rsquo;s coding policy before billing. No patient data is collected or transmitted.
+</p>
+
+<script src="app.js"></script>
+</body>
+</html>

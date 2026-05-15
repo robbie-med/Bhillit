@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="E/M Coder">
+  <rect width="512" height="512" rx="112" fill="#1f2724"/>
+  <rect x="56" y="56" width="400" height="400" rx="80" fill="#3e5c4a"/>
+  <g fill="#ffffff" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-weight="800" text-anchor="middle">
+    <text x="256" y="296" font-size="180" letter-spacing="-6">E/M</text>
+  </g>
+  <rect x="146" y="338" width="220" height="20" rx="10" fill="#ecc97f"/>
+</svg>
