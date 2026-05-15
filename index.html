@@ -20,6 +20,7 @@
 <header>
   <div class="title">E/M Coder <span class="sub">MDM &middot; 2026</span></div>
   <div class="controls">
+    <button id="openLog">Log <span class="badge" id="logCount">0</span></button>
     <button id="ptType">Established</button>
     <button id="reset">Reset</button>
   </div>
@@ -66,6 +67,7 @@
   <div class="result-row">
     <div class="code empty" id="codeOut">&mdash;</div>
     <div class="driver" id="driverOut">Tap above to start.</div>
+    <button class="log-btn" id="logBtn" disabled>+ Log</button>
     <div class="expand-icon">&#9662;</div>
   </div>
   <div class="details" id="details">
@@ -82,6 +84,56 @@
   Educational reference only. Verify against current CPT&reg;/CMS guidance and your
   organization&rsquo;s coding policy before billing. No patient data is collected or transmitted.
 </p>
+
+<div class="panel" id="logPanel" role="dialog" aria-modal="true" aria-label="Coding log">
+  <div class="panel-head">
+    <div class="panel-title">Coding log</div>
+    <button id="closeLog" class="ghost-btn">Done</button>
+  </div>
+  <div class="panel-body">
+    <div class="seg" id="logFilter">
+      <button data-f="all" class="on">All</button>
+      <button data-f="new">New&nbsp;pt</button>
+      <button data-f="est">Est&nbsp;pt</button>
+    </div>
+
+    <div class="barwrap">
+      <div class="bl"><strong>Your mix</strong> <span id="yourCount">0 logged</span></div>
+      <div class="bar" id="yourBar"></div>
+    </div>
+    <div class="barwrap">
+      <div class="bl"><strong>Reference avg</strong> <span>approx. benchmark</span></div>
+      <div class="bar" id="refBar"></div>
+    </div>
+    <div class="legend" id="chartLegend">
+      <span><i class="sf"></i>Straightforward</span>
+      <span><i class="low"></i>Low</span>
+      <span><i class="mod"></i>Moderate</span>
+      <span><i class="high"></i>High</span>
+    </div>
+
+    <table class="cmp-table" id="cmpTable">
+      <thead>
+        <tr><th>Level</th><th>You</th><th>n</th><th>Ref</th><th>&Delta;</th></tr>
+      </thead>
+      <tbody id="cmpBody"></tbody>
+    </table>
+
+    <div class="log-actions">
+      <span class="log-summary" id="logSummary"></span>
+      <button id="clearLog" class="danger-btn">Clear all</button>
+    </div>
+    <ul class="log-list" id="logList"></ul>
+
+    <p class="disclaimer" style="padding:0;margin-top:18px">
+      Reference percentages are approximate, illustrative benchmarks blended
+      across outpatient E/M levels &mdash; they are <strong>not</strong> a
+      payer or specialty target. Replace them with your own benchmark and
+      treat any comparison as a prompt for self-review, not a coding rule.
+      Log entries are stored only in this browser.
+    </p>
+  </div>
+</div>
 
 <script src="app.js"></script>
 </body>

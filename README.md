@@ -18,6 +18,11 @@ It also flags common same-day add-on codes and the `-25` modifier.
 - Expandable breakdown showing which elements drove the level.
 - Same-day extras (AWV, preventive visit, counseling codes) with `-25`
   modifier reminders.
+- **Coding log** &mdash; save codes over time and open a panel that charts
+  your MDM-level mix against an (editable, approximate) reference benchmark
+  as two stacked bars plus a breakdown table. Filter by new/established and
+  delete entries individually or all at once. Stored locally in the browser
+  only; no patient data and nothing leaves the device.
 - **Installable PWA** &mdash; works fully offline after the first load.
 
 ## Project structure
@@ -52,5 +57,10 @@ relative, so it can be served from a subdirectory without changes.
 ## Updating
 
 The service worker precaches the app shell under a versioned cache name
-(`em-coder-v1` in `sw.js`). When you change any asset, bump the `CACHE`
-constant so clients fetch the new version and old caches are purged.
+(the `CACHE` constant in `sw.js`, currently `em-coder-v2`). When you change
+any asset, bump that constant so clients fetch the new version and old
+caches are purged.
+
+The reference benchmark used by the coding-log comparison is the
+`BENCHMARK` object near the top of `app.js`. Edit those per-level
+percentages to match your own specialty/payer benchmark.

@@ -57,6 +57,58 @@ const state = {
   extras:   {},
 };
 
+// Approximate, illustrative reference distribution by MDM level (percent).
+// NOT a payer/specialty target — blended across new + established outpatient
+// E/M. Replace with your own benchmark if you have one.
+const BENCHMARK = { sf: 8, low: 38, mod: 46, high: 8 };
+const LEVEL_ORDER = ['sf', 'low', 'mod', 'high'];
+
+// --- Coding log (persisted locally) ---
+const LOG_KEY = 'emCoderLog_v1';
+let logEntries = loadLog();
+let logFilter = 'all'; // 'all' | 'new' | 'est'
+let lastResult = null; // { code, level, ptType } or null when no valid code
+
+function loadLog() {
+  try {
+    const v = JSON.parse(localStorage.getItem(LOG_KEY));
+    return Array.isArray(v) ? v : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveLog() {
+  try { localStorage.setItem(LOG_KEY, JSON.stringify(logEntries)); } catch (e) {}
+}
+
+function addLogEntry() {
+  if (!lastResult) return;
+  logEntries.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    ts: Date.now(),
+    code: lastResult.code,
+    level: lastResult.level,
+    ptType: lastResult.ptType,
+  });
+  saveLog();
+  renderLog();
+}
+
+function deleteLogEntry(id) {
+  logEntries = logEntries.filter(e => e.id !== id);
+  saveLog();
+  renderLog();
+}
+
+function clearLog() {
+  if (!logEntries.length) return;
+  if (!confirm('Delete all ' + logEntries.length + ' logged code(s)? This cannot be undone.')) return;
+  logEntries = [];
+  saveLog();
+  renderLog();
+}
+
 // --- Render ---
 function renderChips(containerId, items, kind) {
   const c = document.getElementById(containerId);
@@ -238,13 +290,16 @@ function recompute() {
     codeEl.textContent = '—';
     codeEl.classList.add('empty');
     driverEl.innerHTML = 'Tap above to start.';
+    lastResult = null;
   } else {
     const code = CODE_TABLE[state.ptType][out.mdmLevel];
     codeEl.textContent = code;
     codeEl.classList.add(out.mdmLevel);
     const ptLabel = state.ptType === 'new' ? 'new' : 'est';
     driverEl.innerHTML = `<strong>${LEVEL_LABEL[out.mdmLevel]} MDM</strong> &middot; ${ptLabel} pt &middot; driven by <strong>${out.drivers.join(' + ')}</strong>`;
+    lastResult = { code, level: out.mdmLevel, ptType: state.ptType };
   }
+  updateLogButton();
 
   // Breakdown
   setBd('bdProb', 'Problems', prob, out.drivers.includes('problems'), out.mdmLevel);
@@ -312,6 +367,134 @@ function renderAddons(risk) {
   }
 }
 
+// --- Log rendering ---
+function updateLogButton() {
+  const b = document.getElementById('logBtn');
+  if (!b) return;
+  b.disabled = !lastResult;
+  if (!lastResult) { b.classList.remove('done'); b.textContent = '+ Log'; }
+}
+
+function filteredEntries() {
+  if (logFilter === 'all') return logEntries;
+  return logEntries.filter(e => e.ptType === logFilter);
+}
+
+function levelCounts(entries) {
+  const c = { sf: 0, low: 0, mod: 0, high: 0 };
+  entries.forEach(e => { if (c[e.level] != null) c[e.level]++; });
+  return c;
+}
+
+function buildBar(el, pct, counts, showCount) {
+  el.innerHTML = '';
+  const total = LEVEL_ORDER.reduce((s, k) => s + pct[k], 0);
+  if (total <= 0) {
+    el.classList.add('empty');
+    const s = document.createElement('span');
+    s.textContent = 'No data yet';
+    el.appendChild(s);
+    return;
+  }
+  el.classList.remove('empty');
+  LEVEL_ORDER.forEach(k => {
+    if (pct[k] <= 0) return;
+    const seg = document.createElement('div');
+    seg.className = 'b-seg ' + k;
+    seg.style.width = pct[k] + '%';
+    const label = Math.round(pct[k]) + '%';
+    seg.title = LEVEL_LABEL[k] + ': ' + label + (showCount && counts ? ' (' + counts[k] + ')' : '');
+    if (pct[k] >= 12) seg.textContent = label;
+    el.appendChild(seg);
+  });
+}
+
+function renderLog() {
+  const all = logEntries.length;
+  const badge = document.getElementById('logCount');
+  if (badge) {
+    badge.textContent = all;
+    badge.classList.toggle('zero', all === 0);
+  }
+
+  const entries = filteredEntries();
+  const counts = levelCounts(entries);
+  const n = entries.length;
+
+  const yourPct = { sf: 0, low: 0, mod: 0, high: 0 };
+  if (n > 0) LEVEL_ORDER.forEach(k => { yourPct[k] = (counts[k] / n) * 100; });
+
+  buildBar(document.getElementById('yourBar'), yourPct, counts, true);
+  buildBar(document.getElementById('refBar'), BENCHMARK, null, false);
+
+  const yc = document.getElementById('yourCount');
+  if (yc) yc.textContent = n + ' logged' + (logFilter !== 'all' ? ' (' + logFilter + ')' : '');
+
+  // Comparison table
+  const body = document.getElementById('cmpBody');
+  body.innerHTML = '';
+  LEVEL_ORDER.forEach(k => {
+    const yPct = n > 0 ? yourPct[k] : 0;
+    const delta = yPct - BENCHMARK[k];
+    const tr = document.createElement('tr');
+    const dCell = n > 0
+      ? `<td class="${delta > 0.5 ? 'delta-up' : delta < -0.5 ? 'delta-dn' : ''}">${delta > 0 ? '+' : ''}${Math.round(delta)}</td>`
+      : '<td>—</td>';
+    tr.innerHTML =
+      `<td>${LEVEL_LABEL[k]}</td>` +
+      `<td>${n > 0 ? Math.round(yPct) + '%' : '—'}</td>` +
+      `<td>${counts[k]}</td>` +
+      `<td>${BENCHMARK[k]}%</td>` +
+      dCell;
+    body.appendChild(tr);
+  });
+
+  const summary = document.getElementById('logSummary');
+  if (summary) summary.textContent = all + ' code' + (all === 1 ? '' : 's') + ' logged total';
+  const clearBtn = document.getElementById('clearLog');
+  if (clearBtn) clearBtn.disabled = all === 0;
+
+  // List (newest first)
+  const list = document.getElementById('logList');
+  list.innerHTML = '';
+  if (!entries.length) {
+    const li = document.createElement('li');
+    li.className = 'log-empty';
+    li.style.justifyContent = 'center';
+    li.textContent = all === 0
+      ? 'No codes logged yet. Tap “+ Log” on a result to start.'
+      : 'No codes match this filter.';
+    list.appendChild(li);
+    return;
+  }
+  const fmt = ts => {
+    try {
+      return new Date(ts).toLocaleString([], {
+        month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
+      });
+    } catch (e) { return ''; }
+  };
+  entries.slice().sort((a, b) => b.ts - a.ts).forEach(e => {
+    const li = document.createElement('li');
+    const tag = document.createElement('span');
+    tag.className = 'code-tag ' + e.level;
+    tag.textContent = e.code;
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.innerHTML = `<b>${LEVEL_LABEL[e.level]}</b> &middot; ${e.ptType === 'new' ? 'New' : 'Est'} pt<br>${fmt(e.ts)}`;
+    const del = document.createElement('button');
+    del.className = 'del';
+    del.type = 'button';
+    del.setAttribute('aria-label', 'Delete ' + e.code + ' entry');
+    del.textContent = '×';
+    del.addEventListener('click', () => deleteLogEntry(e.id));
+    li.appendChild(tag);
+    li.appendChild(meta);
+    li.appendChild(del);
+    list.appendChild(li);
+  });
+}
+
 // --- Wire up ---
 document.addEventListener('DOMContentLoaded', () => {
   renderChips('probChips', PROBLEMS, 'problems');
@@ -350,7 +533,42 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('result').classList.toggle('open');
   });
 
+  // Log this code (don't toggle the result details)
+  const logBtn = document.getElementById('logBtn');
+  logBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (!lastResult) return;
+    addLogEntry();
+    logBtn.classList.add('done');
+    logBtn.textContent = 'Logged ✓';
+    setTimeout(() => {
+      if (!logBtn.disabled) { logBtn.classList.remove('done'); logBtn.textContent = '+ Log'; }
+    }, 1200);
+  });
+
+  const panel = document.getElementById('logPanel');
+  document.getElementById('openLog').addEventListener('click', () => {
+    renderLog();
+    panel.classList.add('open');
+  });
+  document.getElementById('closeLog').addEventListener('click', () => {
+    panel.classList.remove('open');
+  });
+
+  document.getElementById('logFilter').addEventListener('click', e => {
+    const btn = e.target.closest('button[data-f]');
+    if (!btn) return;
+    logFilter = btn.dataset.f;
+    document.querySelectorAll('#logFilter button').forEach(b => {
+      b.classList.toggle('on', b === btn);
+    });
+    renderLog();
+  });
+
+  document.getElementById('clearLog').addEventListener('click', clearLog);
+
   recompute();
+  renderLog();
 });
 
 // --- Service worker registration (offline support) ---
