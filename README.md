@@ -75,7 +75,7 @@ relative, so it can be served from a subdirectory without changes.
 ## Updating
 
 The service worker precaches the app shell under a versioned cache name
-(the `CACHE` constant in `sw.js`, currently `em-coder-v4`). When you change
+(the `CACHE` constant in `sw.js`, currently `em-coder-v5`). When you change
 any asset, bump that constant so clients fetch the new version and old
 caches are purged.
 

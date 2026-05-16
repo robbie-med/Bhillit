@@ -377,6 +377,18 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 #defaultPt { display: flex; }
 #defaultPt button { flex: 1; }
 
+.ack-card {
+  background: var(--sage-soft); border-radius: 14px;
+  padding: 16px 18px; border-left: 3px solid var(--sage);
+}
+.ack-card p { color: var(--ink); font-size: 0.9rem; line-height: 1.55; }
+.ack-card strong { color: var(--forest); }
+.sdg {
+  text-align: center; margin-top: 22px;
+  font-family: var(--serif); font-size: 0.95rem;
+  letter-spacing: 3px; color: var(--muted); opacity: 0.75;
+}
+
 /* ============ TAB BAR ============ */
 .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
