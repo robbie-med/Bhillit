@@ -120,6 +120,16 @@ section { margin-bottom: 14px; }
 }
 .chip.counter:not(.on) .count { display: none; }
 
+.chip .minus {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #e8e4dc; color: var(--ink);
+  font-weight: 800; font-size: 1.1rem; line-height: 1;
+  flex-shrink: 0; margin-left: 2px;
+}
+.chip .minus:active { background: var(--high); color: #fff; }
+.chip.counter:not(.on) .minus { display: none; }
+
 .hint {
   font-size: 0.78rem; color: var(--muted); margin: 6px 4px 0; line-height: 1.35;
 }

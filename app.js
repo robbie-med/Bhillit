@@ -130,6 +130,17 @@ function renderChips(containerId, items, kind) {
     b.appendChild(lbl);
 
     if (item.counter) {
+      const minus = document.createElement('span');
+      minus.className = 'minus';
+      minus.setAttribute('role', 'button');
+      minus.setAttribute('aria-label', 'Remove one ' + item.label);
+      minus.textContent = '−';
+      minus.addEventListener('click', ev => {
+        ev.stopPropagation();
+        onChipDec(kind, item, b);
+      });
+      b.appendChild(minus);
+
       const ct = document.createElement('span');
       ct.className = 'count';
       ct.textContent = '1';
@@ -148,6 +159,15 @@ function onChipTap(kind, item, btn) {
   } else {
     bag[item.id] = !bag[item.id];
   }
+  syncChip(btn, item, bag[item.id]);
+  recompute();
+}
+
+function onChipDec(kind, item, btn) {
+  const bag = state[kind];
+  const cur = bag[item.id] || 0;
+  if (cur <= 0) return;
+  bag[item.id] = cur - 1;
   syncChip(btn, item, bag[item.id]);
   recompute();
 }
