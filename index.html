@@ -3,136 +3,313 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#1f2724">
+<meta name="theme-color" content="#1f4034">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="E/M Coder">
-<meta name="description" content="Offline 2026 E/M visit level coder based on Medical Decision Making (MDM).">
-<title>E/M Coder</title>
+<meta name="apple-mobile-web-app-title" content="Bhillit">
+<meta name="description" content="Bhillit — offline 2026 E/M visit coder. Move through your visit, code with confidence.">
+<title>Bhillit</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div id="app">
 
-<header>
-  <div class="title">E/M Coder <span class="sub">MDM &middot; 2026</span></div>
-  <div class="controls">
-    <button id="openLog">Log <span class="badge" id="logCount">0</span></button>
-    <button id="ptType">Established</button>
-    <button id="reset">Reset</button>
-  </div>
-</header>
-
-<main>
-  <section>
-    <div class="sec-head">
-      <h2>Problems addressed</h2>
-      <span class="sec-lvl" id="probLvl">&mdash;</span>
+  <!-- ============ SPLASH / ONBOARDING ============ -->
+  <section class="screen splash active" id="scr-splash">
+    <div class="splash-top">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 120 120">
+          <rect x="34" y="22" width="15" height="76" rx="2" fill="#1f4034"/>
+          <path d="M46 22 H62 a24 24 0 0 1 0 48 H46 Z" fill="#1f4034"/>
+          <path d="M46 54 H65 a26 26 0 0 1 0 52 H46 Z" fill="#9fbaa6"/>
+        </svg>
+      </div>
+      <div class="wordmark">Bhillit</div>
+      <p class="splash-tag" id="splashTag">Move through your visit.<br>Code with confidence.</p>
     </div>
-    <div class="chips" id="probChips"></div>
-    <div class="hint">Tap stable chronic / minor more than once if more than one; tap &minus; to undo a tap. Document each in your A/P.</div>
+    <div class="splash-hills" aria-hidden="true">
+      <svg viewBox="0 0 375 260" preserveAspectRatio="none">
+        <path d="M0 120 Q120 60 240 110 T375 90 V260 H0 Z" fill="#bcd0c0"/>
+        <path d="M0 170 Q110 110 230 160 T375 140 V260 H0 Z" fill="#7fa088"/>
+        <path d="M0 215 Q130 165 250 205 T375 195 V260 H0 Z" fill="#1f4034"/>
+      </svg>
+    </div>
+    <div class="splash-foot">
+      <button class="btn primary" id="splashNext">Get Started</button>
+      <div class="dots" id="splashDots">
+        <span class="dot on"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+      <p class="splash-sub">Designed for clinicians. Built for clarity.</p>
+    </div>
   </section>
 
-  <section>
-    <div class="sec-head">
-      <h2>Data reviewed / ordered</h2>
-      <span class="sec-lvl" id="dataLvl">&mdash;</span>
+  <!-- ============ HOME ============ -->
+  <section class="screen" id="scr-home">
+    <header class="home-head">
+      <div class="home-head-row">
+        <div class="wordmark sm">Bhillit</div>
+        <button class="icon-btn" id="bellBtn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        </button>
+      </div>
+      <div class="greet">
+        <div class="greet-hi" id="greetHi">Good morning</div>
+        <div class="greet-sub">Ready to code your next visit?</div>
+      </div>
+      <button class="new-visit" id="homeNewVisit">
+        <span class="plus">+</span>
+        <span>New Visit</span>
+      </button>
+    </header>
+
+    <div class="sheet">
+      <div class="sheet-head">
+        <h2>Recent Visits</h2>
+        <button class="link" data-go="history">View all</button>
+      </div>
+      <ul class="visit-list" id="recentList"></ul>
+
+      <div class="sheet-head" style="margin-top:6px">
+        <h2>Quick Start</h2>
+      </div>
+      <button class="quick-card" id="quickStart">
+        <span class="quick-ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h10M8 12h10M8 18h10"/><circle cx="3.5" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg>
+        </span>
+        <span class="quick-txt">
+          <strong>Start a New Visit</strong>
+          <small>Answer a few quick questions to find your code.</small>
+        </span>
+        <span class="chev">›</span>
+      </button>
     </div>
-    <div class="chips" id="dataChips"></div>
-    <div class="hint">Each unique source / test counts once. Tap to increment, &minus; to undo.</div>
   </section>
 
-  <section>
-    <div class="sec-head">
-      <h2>Risk of management</h2>
-      <span class="sec-lvl" id="riskLvl">&mdash;</span>
+  <!-- ============ WIZARD ============ -->
+  <section class="screen wizard" id="scr-wizard">
+    <div class="wiz-top">
+      <button class="icon-btn ghost" id="wizBack" aria-label="Back">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="step-count" id="stepCount">Step 1 of 6</div>
+      <div class="step-dots" id="stepDots"></div>
     </div>
-    <div class="chips" id="riskChips"></div>
-    <div class="hint">Highest applicable wins. Rx for an OTC product still = Rx mgmt.</div>
+
+    <div class="wiz-scroll">
+      <!-- 0: Patient type -->
+      <div class="wstep" data-step="0">
+        <h1 class="wiz-title">Patient Type</h1>
+        <p class="wiz-sub">Which best describes this visit?</p>
+        <button class="select-card" data-pt="est">
+          <span class="sc-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span>
+          <span class="sc-txt"><strong>Established Patient</strong><small>Seen by you or your group in the last 3 years.</small></span>
+          <span class="sc-tick" aria-hidden="true"></span>
+        </button>
+        <button class="select-card" data-pt="new">
+          <span class="sc-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/><path d="M19 3v6M22 6h-6"/></svg></span>
+          <span class="sc-txt"><strong>New Patient</strong><small>Not seen by you or your group in the last 3 years.</small></span>
+          <span class="sc-tick" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <!-- 1: Problems -->
+      <div class="wstep" data-step="1">
+        <div class="wiz-title-row">
+          <h1 class="wiz-title">Problems Addressed</h1>
+          <span class="lvl-badge js-steplvl" data-sec="prob">—</span>
+        </div>
+        <p class="wiz-sub">Tap each problem you addressed. Tap counters again for more than one.</p>
+        <div class="chips" id="probChips"></div>
+        <p class="wiz-hint">Tap stable chronic / minor more than once if more than one; tap &minus; to undo. Document each in your A/P.</p>
+      </div>
+
+      <!-- 2: Data -->
+      <div class="wstep" data-step="2">
+        <div class="wiz-title-row">
+          <h1 class="wiz-title">Data Reviewed</h1>
+          <span class="lvl-badge js-steplvl" data-sec="data">—</span>
+        </div>
+        <p class="wiz-sub">Data reviewed, ordered, or independently interpreted.</p>
+        <div class="chips" id="dataChips"></div>
+        <p class="wiz-hint">Each unique source / test counts once. Tap to increment, &minus; to undo.</p>
+      </div>
+
+      <!-- 3: Risk -->
+      <div class="wstep" data-step="3">
+        <div class="wiz-title-row">
+          <h1 class="wiz-title">Risk of Management</h1>
+          <span class="lvl-badge js-steplvl" data-sec="risk">—</span>
+        </div>
+        <p class="wiz-sub">Highest applicable level wins.</p>
+        <div class="chips" id="riskChips"></div>
+        <p class="wiz-hint">Rx for an OTC product still counts as prescription drug management.</p>
+      </div>
+
+      <!-- 4: Same-day extras -->
+      <div class="wstep" data-step="4">
+        <h1 class="wiz-title">Same-Day Extras</h1>
+        <p class="wiz-sub">Optional. Adds a modifier&nbsp;-25 reminder when paired with the E/M.</p>
+        <div class="chips" id="extrasChips"></div>
+      </div>
+
+      <!-- 5: Review -->
+      <div class="wstep" data-step="5">
+        <h1 class="wiz-title">Medical Decision Making</h1>
+        <p class="wiz-sub">Your code, derived from the 2 of 3 MDM elements.</p>
+
+        <div class="review-card">
+          <div class="rc-top">
+            <div>
+              <div class="rc-label">Your Code</div>
+              <div class="code js-code empty">—</div>
+            </div>
+            <button class="icon-btn book" id="favBtn" aria-label="Save to favorites" disabled>
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+          </div>
+          <div class="rc-driver js-driver">Complete the steps to see your code.</div>
+        </div>
+
+        <div class="breakdown">
+          <div class="bd-row" id="bdProb"><span class="k">Problems</span><span class="v">—</span></div>
+          <div class="bd-row" id="bdData"><span class="k">Data</span><span class="v">—</span></div>
+          <div class="bd-row" id="bdRisk"><span class="k">Risk</span><span class="v">—</span></div>
+        </div>
+        <div class="addons-list" id="addonsOut"></div>
+
+        <p class="disclaimer">
+          Educational reference only. Verify against current CPT&reg;/CMS guidance
+          and your organization&rsquo;s coding policy before billing. No patient
+          data is collected or transmitted.
+        </p>
+      </div>
+    </div>
+
+    <div class="wiz-foot">
+      <div class="result-card" id="liveResult">
+        <div>
+          <div class="rc-label">Your Code</div>
+          <div class="code js-code empty">—</div>
+        </div>
+        <div class="rc-driver js-driver">Complete the steps to see your code.</div>
+        <button class="link" id="viewDetails">View Details</button>
+      </div>
+      <div class="foot-btns">
+        <button class="btn primary" id="wizPrimary">Continue</button>
+        <button class="link big" id="wizSecondary">Skip to Results</button>
+      </div>
+    </div>
   </section>
 
-  <section>
-    <div class="sec-head">
-      <h2>Same-day extras</h2>
+  <!-- ============ HISTORY ============ -->
+  <section class="screen tabbed" id="scr-history">
+    <header class="page-head"><h1>History</h1></header>
+    <div class="page-body">
+      <div class="seg" id="logFilter">
+        <button data-f="all" class="on">All</button>
+        <button data-f="new">New&nbsp;pt</button>
+        <button data-f="est">Est&nbsp;pt</button>
+      </div>
+
+      <div class="card pad">
+        <div class="barwrap">
+          <div class="bl"><strong>Your mix</strong> <span id="yourCount">0 logged</span></div>
+          <div class="bar" id="yourBar"></div>
+        </div>
+        <div class="barwrap">
+          <div class="bl"><strong>Reference avg</strong> <span>approx. benchmark</span></div>
+          <div class="bar" id="refBar"></div>
+        </div>
+        <div class="legend">
+          <span><i class="sf"></i>Straightforward</span>
+          <span><i class="low"></i>Low</span>
+          <span><i class="mod"></i>Moderate</span>
+          <span><i class="high"></i>High</span>
+        </div>
+        <table class="cmp-table">
+          <thead><tr><th>Level</th><th>You</th><th>n</th><th>Ref</th><th>&Delta;</th></tr></thead>
+          <tbody id="cmpBody"></tbody>
+        </table>
+      </div>
+
+      <div class="log-actions">
+        <span class="log-summary" id="logSummary"></span>
+        <button id="clearLog" class="danger-btn">Clear all</button>
+      </div>
+      <ul class="visit-list" id="logList"></ul>
+
+      <p class="disclaimer">
+        Reference percentages are approximate, illustrative benchmarks blended
+        across outpatient E/M levels &mdash; <strong>not</strong> a payer or
+        specialty target. Log entries are stored only in this browser.
+      </p>
     </div>
-    <div class="chips" id="extrasChips"></div>
-    <div class="hint">Auto-adds modifier -25 when a preventive or counseling code is paired with the E/M.</div>
   </section>
-</main>
 
-<div class="result" id="result">
-  <div class="result-row">
-    <div class="code empty" id="codeOut">&mdash;</div>
-    <div class="driver" id="driverOut">Tap above to start.</div>
-    <button class="log-btn" id="logBtn" disabled>+ Log</button>
-    <div class="expand-icon">&#9662;</div>
-  </div>
-  <div class="details" id="details">
-    <div class="breakdown">
-      <div class="bd-row" id="bdProb"><span class="k">Problems</span><span class="v">&mdash;</span></div>
-      <div class="bd-row" id="bdData"><span class="k">Data</span><span class="v">&mdash;</span></div>
-      <div class="bd-row" id="bdRisk"><span class="k">Risk</span><span class="v">&mdash;</span></div>
+  <!-- ============ FAVORITES ============ -->
+  <section class="screen tabbed" id="scr-favorites">
+    <header class="page-head"><h1>Favorites</h1></header>
+    <div class="page-body">
+      <ul class="visit-list" id="favList"></ul>
     </div>
-    <div class="addons-list" id="addonsOut"></div>
-  </div>
-</div>
+  </section>
 
-<p class="disclaimer">
-  Educational reference only. Verify against current CPT&reg;/CMS guidance and your
-  organization&rsquo;s coding policy before billing. No patient data is collected or transmitted.
-</p>
+  <!-- ============ SETTINGS ============ -->
+  <section class="screen tabbed" id="scr-settings">
+    <header class="page-head"><h1>Settings</h1></header>
+    <div class="page-body">
+      <div class="set-group">
+        <div class="set-label">Default patient type</div>
+        <div class="seg" id="defaultPt">
+          <button data-pt="est" class="on">Established</button>
+          <button data-pt="new">New</button>
+        </div>
+        <p class="set-note">Used when you start a new visit.</p>
+      </div>
 
-<div class="panel" id="logPanel" role="dialog" aria-modal="true" aria-label="Coding log">
-  <div class="panel-head">
-    <div class="panel-title">Coding log</div>
-    <button id="closeLog" class="ghost-btn">Done</button>
-  </div>
-  <div class="panel-body">
-    <div class="seg" id="logFilter">
-      <button data-f="all" class="on">All</button>
-      <button data-f="new">New&nbsp;pt</button>
-      <button data-f="est">Est&nbsp;pt</button>
+      <div class="set-group">
+        <button class="set-row" id="showIntro"><span>Show intro again</span><span class="chev">›</span></button>
+        <button class="set-row danger" id="settingsClear"><span>Clear all history</span><span class="chev">›</span></button>
+      </div>
+
+      <div class="set-group">
+        <div class="set-label">About</div>
+        <p class="set-note">
+          Bhillit is an offline E/M coding aid using the 2026 Medical Decision
+          Making framework. It is an educational reference only and does not
+          replace certified coding review or current CPT&reg;/CMS guidance. No
+          patient data is collected, stored, or transmitted.
+        </p>
+        <p class="set-note" id="verNote">Bhillit &middot; v3</p>
+      </div>
     </div>
+  </section>
 
-    <div class="barwrap">
-      <div class="bl"><strong>Your mix</strong> <span id="yourCount">0 logged</span></div>
-      <div class="bar" id="yourBar"></div>
-    </div>
-    <div class="barwrap">
-      <div class="bl"><strong>Reference avg</strong> <span>approx. benchmark</span></div>
-      <div class="bar" id="refBar"></div>
-    </div>
-    <div class="legend" id="chartLegend">
-      <span><i class="sf"></i>Straightforward</span>
-      <span><i class="low"></i>Low</span>
-      <span><i class="mod"></i>Moderate</span>
-      <span><i class="high"></i>High</span>
-    </div>
+  <!-- ============ BOTTOM NAV ============ -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab on" data-go="home">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="tab" data-go="history">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+      <span>History</span>
+    </button>
+    <button class="tab" data-go="favorites">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      <span>Favorites</span>
+    </button>
+    <button class="tab" data-go="settings">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 8 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 8a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      <span>Settings</span>
+    </button>
+  </nav>
 
-    <table class="cmp-table" id="cmpTable">
-      <thead>
-        <tr><th>Level</th><th>You</th><th>n</th><th>Ref</th><th>&Delta;</th></tr>
-      </thead>
-      <tbody id="cmpBody"></tbody>
-    </table>
-
-    <div class="log-actions">
-      <span class="log-summary" id="logSummary"></span>
-      <button id="clearLog" class="danger-btn">Clear all</button>
-    </div>
-    <ul class="log-list" id="logList"></ul>
-
-    <p class="disclaimer" style="padding:0;margin-top:18px">
-      Reference percentages are approximate, illustrative benchmarks blended
-      across outpatient E/M levels &mdash; they are <strong>not</strong> a
-      payer or specialty target. Replace them with your own benchmark and
-      treat any comparison as a prompt for self-review, not a coding rule.
-      Log entries are stored only in this browser.
-    </p>
-  </div>
+  <div class="toast" id="toast" aria-live="polite"></div>
 </div>
 
 <script src="app.js"></script>

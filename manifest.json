@@ -1,13 +1,13 @@
 {
-  "name": "E/M Coder",
-  "short_name": "E/M Coder",
-  "description": "Offline 2026 E/M visit level coder based on Medical Decision Making (MDM).",
+  "name": "Bhillit — E/M Coder",
+  "short_name": "Bhillit",
+  "description": "Bhillit: offline 2026 E/M visit coder. Move through your visit, code with confidence.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f7f5f1",
-  "theme_color": "#1f2724",
+  "background_color": "#f5f3ec",
+  "theme_color": "#1f4034",
   "icons": [
     {
       "src": "icons/icon.svg",

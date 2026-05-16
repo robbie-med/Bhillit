@@ -1,4 +1,4 @@
-const CACHE = 'em-coder-v3';
+const CACHE = 'em-coder-v4';
 const ASSETS = [
   './',
   './index.html',

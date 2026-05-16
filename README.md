@@ -1,9 +1,16 @@
-# E/M Coder
+# Bhillit
 
-An offline-first web app that suggests an outpatient Evaluation &amp;
-Management (E/M) CPT level from the 2026 **Medical Decision Making (MDM)**
-elements: problems addressed, data reviewed/ordered, and risk of management.
-It also flags common same-day add-on codes and the `-25` modifier.
+> *Move through your visit. Code with confidence.*
+
+Bhillit is an offline-first web app that suggests an outpatient Evaluation
+&amp; Management (E/M) CPT level from the 2026 **Medical Decision Making
+(MDM)** elements: problems addressed, data reviewed/ordered, and risk of
+management. It also flags common same-day add-on codes and the `-25`
+modifier.
+
+The interface is a guided multi-screen flow: a splash/onboarding screen, a
+home screen with recent visits and quick start, a six-step coding wizard,
+and a bottom navigation bar with History, Favorites, and Settings.
 
 > **Disclaimer:** Educational reference only. It does not replace clinical
 > judgement, certified coding review, or current CPT&reg;/CMS guidance. No
@@ -12,17 +19,28 @@ It also flags common same-day add-on codes and the `-25` modifier.
 
 ## Features
 
-- Tap chips to record problems, data, and risk; counts increment on repeat taps.
-- Live CPT code (`99202&ndash;99205` new / `99212&ndash;99215` established) using the
-  "2 of 3 MDM elements" rule.
-- Expandable breakdown showing which elements drove the level.
+- **Onboarding splash** with a short three-slide intro (shown once; re-open
+  from Settings).
+- **Home** with a time-based greeting, recent visits, and a one-tap
+  "New Visit" / Quick Start.
+- **Six-step wizard**: patient type &rarr; problems &rarr; data &rarr; risk
+  &rarr; same-day extras &rarr; review. A live result card shows the running
+  code; "Skip to Results" jumps straight to the review.
+- The full MDM auto-calculation is preserved &mdash; tap chips to record
+  problems/data/risk (counters increment on repeat taps, `&minus;` to undo),
+  and the CPT code (`99202&ndash;99205` new / `99212&ndash;99215`
+  established) is derived with the "2 of 3 MDM elements" rule, with a
+  breakdown of which elements drove the level.
 - Same-day extras (AWV, preventive visit, counseling codes) with `-25`
   modifier reminders.
-- **Coding log** &mdash; save codes over time and open a panel that charts
-  your MDM-level mix against an (editable, approximate) reference benchmark
-  as two stacked bars plus a breakdown table. Filter by new/established and
-  delete entries individually or all at once. Stored locally in the browser
-  only; no patient data and nothing leaves the device.
+- **History** tab: a benchmark comparison charting your MDM-level mix
+  against an (editable, approximate) reference benchmark as two stacked bars
+  plus a breakdown table, filterable by new/established, with per-visit and
+  bulk delete.
+- **Favorites** tab: bookmark visits from the review card or any list.
+- **Settings**: default patient type, replay intro, clear all history.
+- Visits are stored locally in the browser only; no patient data and
+  nothing leaves the device.
 - **Installable PWA** &mdash; works fully offline after the first load.
 
 ## Project structure
@@ -57,7 +75,7 @@ relative, so it can be served from a subdirectory without changes.
 ## Updating
 
 The service worker precaches the app shell under a versioned cache name
-(the `CACHE` constant in `sw.js`, currently `em-coder-v3`). When you change
+(the `CACHE` constant in `sw.js`, currently `em-coder-v4`). When you change
 any asset, bump that constant so clients fetch the new version and old
 caches are purged.
 
